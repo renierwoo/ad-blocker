@@ -53,6 +53,7 @@ jobs:
     permissions:
       contents: read          # Required to checkout and read repo files
       actions: read           # Required to read actions secrets
+      packages: read          # Required to read packages
       security-events: write  # Required to upload SARIF files to Security tab
 
     env:

@@ -74,7 +74,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: 'config'
-          hide-progress: false
+          hide-progress: true
           # Un-comment the following line only if you want to see the results in the console
           # format: 'table'
           # Comment the following line if you want to see the results in the console
@@ -131,9 +131,9 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: terraform validate -no-color
+        run: terraform validate # -no-color
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false
+        run: terraform plan -input=false # -no-color
         # continue-on-error: true

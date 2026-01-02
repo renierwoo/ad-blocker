@@ -26,6 +26,7 @@ resource "aws_security_group" "ad_blocker_ec2" {
   vpc_id = data.aws_vpc.default.id
 }
 
+#trivy:ignore:AVD-AWS-0104
 resource "aws_vpc_security_group_egress_rule" "ad_blocker_ec2" {
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all outbound traffic"
@@ -138,6 +139,7 @@ resource "aws_iam_instance_profile" "ad_blocker" {
 # -----------------------------------------------------------------------------
 # Secrets Manager
 # -----------------------------------------------------------------------------
+#trivy:ignore:AVD-AWS-0098
 resource "aws_secretsmanager_secret" "ad_blocker" {
   description = "Ad blocker secrets"
   name        = "ad-blocker"

@@ -124,6 +124,24 @@ resource "aws_iam_role_policy_attachment" "ad_blocker_ssm_core" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+data "aws_iam_policy_document" "ad_blocker" {
+  version   = "2012-10-17"
+  policy_id = "ad_blocker_policy"
+
+  statement {
+    sid       = "SecretsManagerAccess"
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [aws_secretsmanager_secret.ad_blocker.arn]
+  }
+}
+
+resource "aws_iam_role_policy" "ad_blocker" {
+  name   = "ad-blocker"
+  role   = aws_iam_role.ad_blocker.name
+  policy = data.aws_iam_policy_document.ad_blocker.json
+}
+
 # -----------------------------------------------------------------------------
 # IAM Instance Profile
 # -----------------------------------------------------------------------------

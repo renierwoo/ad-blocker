@@ -1,7 +1,7 @@
 #!/bin/bash
 
 dnf update --assumeyes
-dnf install --assumeyes amazon-efs-utils
+dnf install --assumeyes amazon-efs-utils jq
 
 EFS_ID="${efs_id}"
 SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "ad-blocker" --region ${region} --query SecretString --output text)
@@ -17,7 +17,6 @@ mount --bind /mnt/efs/etc-pihole /etc/pihole
 mount --bind /mnt/efs/etc-dnsmasq.d /etc/dnsmasq.d
 
 export TZ='Europe/Madrid'
-
 # export PIHOLE_SKIP_OS_CHECK=true
 
 # if [ ! -f /etc/pihole/pihole.toml ]; then

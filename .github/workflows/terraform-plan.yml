@@ -49,9 +49,14 @@ jobs:
 
     needs: tflint
     runs-on: ubuntu-latest
+
     permissions:
       contents: read          # Required to checkout and read repo files
       security-events: write  # Required to upload SARIF files to Security tab
+
+    env:
+      TF_VAR_aws_default_region: ${{ secrets.AWS_DEFAULT_REGION }}
+      TF_VAR_warp_connector_token: ${{ secrets.WARP_CONNECTOR_TOKEN }}
 
     steps:
       - name: Checkout
@@ -66,20 +71,20 @@ jobs:
       - name: Run Trivy vulnerability scanner in IaC mode
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          scan-type: "config"
+          scan-type: 'config'
           hide-progress: false
-          format: "sarif"
-          output: "trivy-results.sarif"
-          exit-code: "1"
-          severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
-          scan-ref: "./terraform/"
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          scan-ref: './terraform/'
           skip-setup-trivy: true
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: 'trivy-results.sarif'
 
   terraform_plan:
     if: github.event_name == 'pull_request'

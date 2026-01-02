@@ -66,20 +66,20 @@ jobs:
       - name: Run Trivy vulnerability scanner in IaC mode
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          scan-type: 'config'
+          scan-type: "config"
           hide-progress: false
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '1'
-          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
-          scan-ref: './terraform/'
+          format: "sarif"
+          output: "trivy-results.sarif"
+          exit-code: "1"
+          severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+          scan-ref: "./terraform/"
           skip-setup-trivy: true
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   terraform_plan:
     if: github.event_name == 'pull_request'

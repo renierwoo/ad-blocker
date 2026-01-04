@@ -223,8 +223,9 @@ resource "aws_launch_template" "ad_blocker" {
 
   user_data = base64encode(
     templatefile("${path.module}/assets/user-data.tpl", {
-      efs_id = aws_efs_file_system.ad_blocker.id
-      region = var.aws_default_region
+      efs_id   = aws_efs_file_system.ad_blocker.id
+      region   = var.aws_default_region
+      vpc_cidr = data.aws_vpc.default.cidr_block
     })
   )
 }

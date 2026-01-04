@@ -227,8 +227,6 @@ resource "aws_launch_template" "ad_blocker" {
       region = var.aws_default_region
     })
   )
-
-  vpc_security_group_ids = [aws_security_group.ad_blocker_ec2.id]
 }
 
 # -----------------------------------------------------------------------------

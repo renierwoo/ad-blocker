@@ -49,9 +49,16 @@ jobs:
 
     needs: tflint
     runs-on: ubuntu-latest
+
     permissions:
       contents: read          # Required to checkout and read repo files
+      actions: read           # Required to read actions secrets
+      packages: read          # Required to read packages
       security-events: write  # Required to upload SARIF files to Security tab
+
+    env:
+      TF_VAR_aws_default_region: ${{ secrets.AWS_DEFAULT_REGION }}
+      TF_VAR_warp_connector_token: ${{ secrets.WARP_CONNECTOR_TOKEN }}
 
     steps:
       - name: Checkout
@@ -68,7 +75,11 @@ jobs:
         with:
           scan-type: 'config'
           hide-progress: true
+          # Un-comment the following line only if you want to see the results in the console
+          # format: 'table'
+          # Comment the following line if you want to see the results in the console
           format: 'sarif'
+          # Comment the following line if you want to see the results in the console
           output: 'trivy-results.sarif'
           exit-code: '1'
           severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
@@ -96,10 +107,11 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_aws_default_region: ${{ secrets.AWS_DEFAULT_REGION }}
+      TF_VAR_warp_connector_token: ${{ secrets.WARP_CONNECTOR_TOKEN }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -119,9 +131,9 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: terraform validate -no-color
+        run: terraform validate # -no-color
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false
+        run: terraform plan -input=false # -no-color
         # continue-on-error: true

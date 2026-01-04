@@ -25,7 +25,7 @@ export TZ='Europe/Madrid'
 if [ ! -f /etc/pihole/pihole.toml ]; then
     cat <<EOT > /etc/pihole/pihole.toml
 [dns.reply.host]
-IPv4 = "${IP_PRIVATE}"
+IPv4 = "$IP_PRIVATE"
 EOT
 fi
 

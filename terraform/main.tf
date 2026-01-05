@@ -243,7 +243,7 @@ resource "aws_autoscaling_group" "ad_blocker" {
     instances_distribution {
       on_demand_base_capacity                  = 0
       on_demand_percentage_above_base_capacity = 0 # 100% Spot
-      spot_allocation_strategy                 = "capacity-optimized"
+      spot_allocation_strategy                 = "price-capacity-optimized"
       spot_max_price                           = "0.0096"
     }
 

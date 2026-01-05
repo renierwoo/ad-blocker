@@ -254,13 +254,11 @@ resource "aws_autoscaling_group" "ad_blocker" {
       }
 
       override {
-        instance_type     = "t4g.nano"
-        weighted_capacity = 1
+        instance_type = "t4g.nano"
       }
 
       override {
-        instance_type     = "t4g.micro"
-        weighted_capacity = 2
+        instance_type = "t4g.micro"
       }
     }
   }

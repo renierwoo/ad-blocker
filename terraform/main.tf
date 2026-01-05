@@ -193,7 +193,7 @@ resource "aws_launch_template" "ad_blocker" {
     market_type = "spot"
 
     spot_options {
-      max_price = "0.0048"
+      max_price = "0.0096"
     }
   }
 
@@ -242,6 +242,32 @@ resource "aws_autoscaling_group" "ad_blocker" {
   launch_template {
     id      = aws_launch_template.ad_blocker.id
     version = "$Latest"
+  }
+
+  mixed_instances_policy {
+    instances_distribution {
+      on_demand_base_capacity                  = 0
+      on_demand_percentage_above_base_capacity = 0 # 100% Spot
+      spot_allocation_strategy                 = "capacity-optimized"
+      spot_max_price                           = "0.0096"
+    }
+
+    launch_template {
+      launch_template_specification {
+        launch_template_id = aws_launch_template.ad_blocker.id
+        version            = "$Latest"
+      }
+
+      override {
+        instance_type = "t4g.nano"
+        weighted_capacity = 1
+      }
+
+      override {
+        instance_type = "t4g.micro"
+        weighted_capacity = 2
+      }
+    }
   }
 
   health_check_grace_period = 300

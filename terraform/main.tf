@@ -244,7 +244,6 @@ resource "aws_autoscaling_group" "ad_blocker" {
       on_demand_base_capacity                  = 0
       on_demand_percentage_above_base_capacity = 0 # 100% Spot
       spot_allocation_strategy                 = "price-capacity-optimized"
-      # spot_max_price                           = "0.0096"
     }
 
     launch_template {
@@ -254,13 +253,11 @@ resource "aws_autoscaling_group" "ad_blocker" {
       }
 
       override {
-        instance_type     = "t4g.nano"
-        weighted_capacity = 1
+        instance_type = "t4g.nano"
       }
 
       override {
-        instance_type     = "t4g.micro"
-        weighted_capacity = 2
+        instance_type = "t4g.micro"
       }
     }
   }

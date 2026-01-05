@@ -239,11 +239,6 @@ resource "aws_autoscaling_group" "ad_blocker" {
   min_size           = 1
   capacity_rebalance = true
 
-  launch_template {
-    id      = aws_launch_template.ad_blocker.id
-    version = "$Latest"
-  }
-
   mixed_instances_policy {
     instances_distribution {
       on_demand_base_capacity                  = 0

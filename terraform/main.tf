@@ -189,13 +189,13 @@ resource "aws_launch_template" "ad_blocker" {
   image_id                             = data.aws_ssm_parameter.al2023_arm.value
   instance_initiated_shutdown_behavior = "terminate"
 
-  instance_market_options {
-    market_type = "spot"
+  # instance_market_options {
+  #   market_type = "spot"
 
-    spot_options {
-      max_price = "0.0096"
-    }
-  }
+  #   spot_options {
+  #     max_price = "0.0096"
+  #   }
+  # }
 
   instance_type = "t4g.nano"
 

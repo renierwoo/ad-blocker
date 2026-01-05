@@ -38,9 +38,6 @@ dnf install --assumeyes cloudflare-warp
 
 sysctl -w net.ipv4.ip_forward=1
 
-warp-cli --accept-tos add-excluded-route 169.254.169.254/32
-warp-cli --accept-tos add-excluded-route ${vpc_cidr}
-
 warp-cli --accept-tos connector new $WARP_TOKEN
-
+warp-cli --accept-tos add-excluded-route 169.254.169.254/32
 warp-cli --accept-tos connect

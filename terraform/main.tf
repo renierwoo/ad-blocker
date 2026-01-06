@@ -176,6 +176,18 @@ resource "aws_secretsmanager_secret_version" "ad_blocker" {
 }
 
 # -----------------------------------------------------------------------------
+# TLS Private Key
+# -----------------------------------------------------------------------------
+resource "tls_private_key" "ad_blocker" {
+  algorithm = "ED25519"
+}
+
+# resource "aws_key_pair" "ad_blocker" {
+#   key_name   = "ad-blocker"
+#   public_key = tls_private_key.ad_blocker.public_key_pem
+# }
+
+# -----------------------------------------------------------------------------
 # Launch Template
 # -----------------------------------------------------------------------------
 resource "aws_launch_template" "ad_blocker" {

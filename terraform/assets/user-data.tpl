@@ -20,7 +20,6 @@ mount --bind /mnt/efs/etc-pihole /etc/pihole
 mount --bind /mnt/efs/etc-dnsmasq.d /etc/dnsmasq.d
 
 export TZ='Europe/Madrid'
-# export PIHOLE_SKIP_OS_CHECK=true
 
 if [ ! -f /etc/pihole/pihole.toml ]; then
     cat <<EOT > /etc/pihole/pihole.toml
@@ -39,5 +38,4 @@ dnf install --assumeyes cloudflare-warp
 sysctl -w net.ipv4.ip_forward=1
 
 warp-cli --accept-tos connector new $WARP_TOKEN
-# warp-cli --accept-tos add-excluded-route 169.254.169.254/32
 warp-cli --accept-tos connect

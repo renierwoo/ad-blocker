@@ -182,10 +182,10 @@ resource "tls_private_key" "ad_blocker" {
   algorithm = "ED25519"
 }
 
-# resource "aws_key_pair" "ad_blocker" {
-#   key_name   = "ad-blocker"
-#   public_key = tls_private_key.ad_blocker.public_key_pem
-# }
+resource "aws_key_pair" "ad_blocker" {
+  key_name   = "ad-blocker"
+  public_key = trimspace(tls_private_key.ad_blocker.public_key_openssh)
+}
 
 # -----------------------------------------------------------------------------
 # Launch Template
@@ -210,6 +210,7 @@ resource "aws_launch_template" "ad_blocker" {
   # }
 
   instance_type = "t4g.nano"
+  key_name      = aws_key_pair.ad_blocker.key_name
 
   metadata_options {
     http_endpoint               = "enabled"

@@ -198,8 +198,8 @@ resource "aws_launch_template" "ad_blocker" {
     name = aws_iam_instance_profile.ad_blocker.name
   }
 
-  image_id                             = data.aws_ssm_parameter.al2023_arm.value
-  instance_initiated_shutdown_behavior = "terminate"
+  image_id = data.aws_ssm_parameter.al2023_arm.value
+  # instance_initiated_shutdown_behavior = "terminate" # For spot instances
 
   # instance_market_options {
   #   market_type = "spot"
@@ -236,9 +236,9 @@ resource "aws_launch_template" "ad_blocker" {
 
   user_data = base64encode(
     templatefile("${path.module}/assets/user-data.tpl", {
-      efs_id   = aws_efs_file_system.ad_blocker.id
-      region   = var.aws_default_region
-      vpc_cidr = data.aws_vpc.default.cidr_block
+      efs_id = aws_efs_file_system.ad_blocker.id
+      region = var.aws_default_region
+      # vpc_cidr = data.aws_vpc.default.cidr_block
     })
   )
 }
@@ -247,33 +247,38 @@ resource "aws_launch_template" "ad_blocker" {
 # Auto Scaling Group
 # -----------------------------------------------------------------------------
 resource "aws_autoscaling_group" "ad_blocker" {
-  name               = "ad-blocker"
-  max_size           = 1
-  min_size           = 1
-  capacity_rebalance = true
+  name     = "ad-blocker"
+  max_size = 1
+  min_size = 1
+  # capacity_rebalance = true # For spot instances
 
-  mixed_instances_policy {
-    instances_distribution {
-      on_demand_base_capacity                  = 0
-      on_demand_percentage_above_base_capacity = 0 # 100% Spot
-      spot_allocation_strategy                 = "price-capacity-optimized"
-    }
-
-    launch_template {
-      launch_template_specification {
-        launch_template_id = aws_launch_template.ad_blocker.id
-        version            = "$Latest"
-      }
-
-      override {
-        instance_type = "t4g.nano"
-      }
-
-      override {
-        instance_type = "t4g.micro"
-      }
-    }
+  launch_template {
+    id      = aws_launch_template.ad_blocker.id
+    version = "$Latest"
   }
+
+  # mixed_instances_policy {
+  #   instances_distribution {
+  #     on_demand_base_capacity                  = 0
+  #     on_demand_percentage_above_base_capacity = 0 # 100% spot
+  #     spot_allocation_strategy                 = "price-capacity-optimized"
+  #   }
+
+  #   launch_template {
+  #     launch_template_specification {
+  #       launch_template_id = aws_launch_template.ad_blocker.id
+  #       version            = "$Latest"
+  #     }
+
+  #     override {
+  #       instance_type = "t4g.nano"
+  #     }
+
+  #     override {
+  #       instance_type = "t4g.micro"
+  #     }
+  #   }
+  # }
 
   health_check_grace_period = 300
   health_check_type         = "EC2"

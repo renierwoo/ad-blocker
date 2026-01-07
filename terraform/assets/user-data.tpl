@@ -32,9 +32,6 @@ IP_PRIVATE=$(ip addr show CloudflareWARP | grep "inet " | awk '{print $2}' | cut
 
 if [ ! -f /etc/pihole/pihole.toml ]; then
     cat <<EOT > /etc/pihole/pihole.toml
-[dns]
-  upstreams = [ "1.1.1.1", "1.0.0.1" ]
-  interface = "CloudflareWARP"
 [dns.reply.host]
 IPv4 = "$IP_PRIVATE"
 EOT

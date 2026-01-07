@@ -7,9 +7,6 @@ EFS_ID="${efs_id}"
 SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "ad-blocker" --region ${region} --query SecretString --output text)
 WARP_TOKEN=$(echo $SECRET_JSON | jq -r .warp_token)
 
-TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
-IP_PRIVATE=`curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4`
-
 mkdir --parents /mnt/efs
 mount --types efs --options tls $EFS_ID:/ /mnt/efs
 
@@ -21,15 +18,6 @@ mount --bind /mnt/efs/etc-dnsmasq.d /etc/dnsmasq.d
 
 export TZ='Europe/Madrid'
 
-if [ ! -f /etc/pihole/pihole.toml ]; then
-    cat <<EOT > /etc/pihole/pihole.toml
-[dns.reply.host]
-IPv4 = "$IP_PRIVATE"
-EOT
-fi
-
-curl --silent --show-error --location https://install.pi-hole.net | bash /dev/stdin --unattended
-
 curl --fail --silent --show-error --list-only https://pkg.cloudflareclient.com/cloudflare-warp-ascii.repo | tee /etc/yum.repos.d/cloudflare-warp.repo
 
 dnf update --assumeyes
@@ -39,3 +27,17 @@ sysctl -w net.ipv4.ip_forward=1
 
 warp-cli --accept-tos connector new $WARP_TOKEN
 warp-cli --accept-tos connect
+
+IP_PRIVATE=$(ip addr show CloudflareWARP | grep "inet " | awk '{print $2}' | cut -d/ -f1)
+
+if [ ! -f /etc/pihole/pihole.toml ]; then
+    cat <<EOT > /etc/pihole/pihole.toml
+[dns]
+  upstreams = [ "1.1.1.1", "1.0.0.1" ]
+  interface = "CloudflareWARP"
+[dns.reply.host]
+IPv4 = "$IP_PRIVATE"
+EOT
+fi
+
+curl --silent --show-error --location https://install.pi-hole.net | bash /dev/stdin --unattended
